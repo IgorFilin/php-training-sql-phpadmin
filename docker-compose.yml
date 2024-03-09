@@ -1,0 +1,34 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./html:/var/www/html
+    ports:
+      - "80:80"
+    depends_on:
+      - php
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php
+    volumes:
+      - ./html:/var/www/html
+    ports:
+      - "9000:9000"
+  db:
+    image: mariadb:10.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: notSecureChangeMe
+      MYSQL_DATABASE: maria_db
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 81:80
+    environment:
+      - PMA_ARBITRARY=1
